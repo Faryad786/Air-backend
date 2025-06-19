@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Page = require('../models/page');
 const querystring = require('querystring');
+// Airtable API service for fetching bases, tables, and records
 
 const AIRTABLE_BASE_URL = 'https://api.airtable.com/v0';
 const AIRTABLE_AUTH_URL = 'https://airtable.com/oauth2/v1/authorize';
