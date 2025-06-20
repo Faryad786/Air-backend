@@ -6,7 +6,7 @@ router.get('/bases', airtableController.getBases);
 router.get('/bases/:baseId/tables', airtableController.getTables);
 router.get('/bases/:baseId/tables/:tableId/pages', airtableController.getAndStorePages);
 router.get('/users', airtableController.getUsers);
-router.get('/oauth/redirect', airtableController.oauthRedirect);
-router.get('/oauth/callback', airtableController.oauthCallback);
+router.get('/auth-url', airtableController.getAuthUrl);
+router.get('/oauth/callback', airtableController.handleOAuthCallback);
 
 module.exports = router; 
