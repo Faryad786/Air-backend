@@ -160,7 +160,7 @@ async function exchangeCodeForToken(code, state) {
 }
 
 async function fetchUsers(accessToken) {
-  const url = 'https://api.airtable.com/v1/meta/whoami';
+  const url = 'https://api.airtable.com/v0/meta/whoami';
   const res = await axios.get(url, { headers: getAuthHeaders(accessToken) });
   return res.data;
 }
