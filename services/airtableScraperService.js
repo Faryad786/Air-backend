@@ -17,8 +17,8 @@ function cookiesArrayToHeader(cookies) {
  * @param {string} param0.password
  * @returns {Promise<string[]>} cookies
  */
-async function loginAndGetCookies({ email, password }) {
-  const browser = await puppeteer.launch({ headless: true });
+async function loginAndGetCookies({ email, password,mfaCode }) {
+  const browser = await puppeteer.launch({ headless: false });
   const page = await browser.newPage();
   page.setDefaultTimeout(120000);
 
@@ -43,6 +43,17 @@ async function loginAndGetCookies({ email, password }) {
     await new Promise(resolve => setTimeout(resolve, 1000));
 
     console.log('[5] Clicking submit (password)...');
+    await Promise.all([
+      page.click('button[type="submit"]'),
+      page.waitForNavigation({ waitUntil: 'load', timeout: 60000 }),
+    ]);
+
+    console.log('[4] Waiting for mfa input...');
+    await page.waitForSelector('input#mfaCode');
+    await page.type('input#mfaCode', mfaCode);
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    console.log('[5] Clicking submit (mfa)...');
     await Promise.all([
       page.click('button[type="submit"]'),
       page.waitForNavigation({ waitUntil: 'load', timeout: 60000 }),
@@ -130,7 +141,6 @@ const parsedCookies = parseCookiesForPuppeteer(airtableCookies);
   const html = await page.content();
   console.log('Fetched HTML content from Airtable record');
   console.log('HTML length:', html);
-  await browser.close();
   return html;
 }
 

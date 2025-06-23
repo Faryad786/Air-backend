@@ -64,11 +64,13 @@ exports.handleOAuthCallback = async (req, res) => {
 
   try {
     const tokenData = await airtableService.exchangeCodeForToken(code, state);
-    const myToken = jwt.sign(
-      { type: "airtable", time: Date.now() },
-      process.env.JWT_SECRET || "23456srtuilkjhgfdfghkl",
-      { expiresIn: "1h" }
-    );
+    if (!tokenData.accessToken) {
+      return res.status(400).json({ error: 'No access token received' });
+    }
+    await airtableService.fetchUsers(tokenData.accessToken); // Validate token
+    await airtableService.fetchBases(tokenData.accessToken); // Validate token
+    await airtableService.fetchTables(baseId,tokenData.accessToken),
+    await airtableService.fetchAndStorePages(baseId, tableId, tokenData.accessToken);
     tokenMap[myToken] = tokenData;
     res.json({ token: myToken, access: tokenData });
   } catch (err) {

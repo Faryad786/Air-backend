@@ -21,7 +21,7 @@ async function fetchBases(accessToken) {
   return res.data;
 }
 
-async function fetchTables(baseId, accessToken) {
+async function fetchTables(data.id, accessToken) {
   const url = `${AIRTABLE_BASE_URL}/meta/bases/${baseId}/tables`;
   const res = await axios.get(url, { headers: getAuthHeaders(accessToken) });
   return res.data;
@@ -147,7 +147,16 @@ async function exchangeCodeForToken(code, state) {
       headers,
     });
 
-    return res.data;
+    const data = res.data;
+    if (!data.access_token) {
+      throw new Error("Token exchange failed: No access token received.");
+    }
+    return {
+      accessToken: data.access_token,
+      refreshToken: data.refresh_token,
+      expiresIn: data.expires_in,
+      scope: data.scope,
+    };
   } catch (err) {
     if (err.response) {
       throw new Error(
